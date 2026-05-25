@@ -69,3 +69,9 @@ variable "your_ip" {
   type        = string
   default     = "0.0.0.0/0" # WARNING: Change this in terraform.tfvars for security
 }
+
+variable "key_name" {
+  description = "SSH Key pair name for EC2 instances"
+  type        = string
+  default     = ""
+}

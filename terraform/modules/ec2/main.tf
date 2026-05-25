@@ -101,9 +101,11 @@ resource "aws_launch_template" "app" {
 resource "aws_instance" "jenkins" {
   ami                         = data.aws_ami.amazon_linux_2023.id
   instance_type               = var.instance_type
+  key_name                    = var.key_name
   subnet_id                   = var.public_subnets[0]
   vpc_security_group_ids      = [var.jenkins_sg_id]
   associate_public_ip_address = true
+  iam_instance_profile        = aws_iam_instance_profile.app_profile.name
 
   # IAM role with ECR push/pull permissions would be attached here in a real scenario
   # but keeping it simple as requested

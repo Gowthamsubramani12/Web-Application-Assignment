@@ -36,6 +36,7 @@ module "ec2" {
   app_security_group  = module.security_groups.app_sg_id
   jenkins_sg_id       = module.security_groups.jenkins_sg_id
   instance_type       = var.instance_type
+  key_name            = var.key_name
   project_name        = var.project_name
   environment         = var.environment
 }

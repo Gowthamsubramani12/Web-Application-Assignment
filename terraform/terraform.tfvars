@@ -9,4 +9,5 @@ instance_type        = "t3.micro"
 asg_min_size         = 1
 asg_max_size         = 3
 asg_desired_capacity = 2
+key_name             = "Terraform-env"
 your_ip              = "49.206.99.244/32"
