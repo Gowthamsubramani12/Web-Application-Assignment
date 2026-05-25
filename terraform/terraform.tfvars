@@ -1,0 +1,12 @@
+aws_region           = "ap-south-1"
+project_name         = "webapp-assignment"
+environment          = "production"
+vpc_cidr             = "10.0.0.0/16"
+public_subnet_cidrs  = ["10.0.1.0/24", "10.0.2.0/24"]
+private_subnet_cidrs = ["10.0.3.0/24", "10.0.4.0/24"]
+availability_zones   = ["ap-south-1a", "ap-south-1b"]
+instance_type        = "t3.micro"
+asg_min_size         = 1
+asg_max_size         = 3
+asg_desired_capacity = 2
+your_ip              = "49.206.99.244/32"
