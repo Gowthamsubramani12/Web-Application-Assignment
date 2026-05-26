@@ -1,0 +1,47 @@
+name: Terraform Drift Detection
+
+on:
+  schedule:
+    - cron: '0 2 * * *' 
+  workflow_dispatch:     
+jobs:
+  drift:
+    runs-on: ubuntu-latest
+    env:
+      AWS_REGION: ap-south-1
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Terraform Init
+        working-directory: ./terraform
+        run: terraform init -input=false
+
+      - name: Terraform Plan (Drift Check)
+        working-directory: ./terraform
+        id: plan
+        run: |
+          terraform plan -input=false -detailed-exitcode -out=tfplan || true
+
+      - name: Detect Drift
+        if: steps.plan.outcome == 'success' && steps.plan.conclusion == 'failure'
+        uses: peter-evans/create-or-update-comment@v2
+        with:
+          token: ${{ secrets.Version_PAT }}
+          issue-number: ${{ github.event.pull_request.number || 1 }}
+          body: |
+            **⚠️ Terraform Drift Detected**  
+            A plan run has reported differences between the Terraform state and the live infrastructure.  
+            Please review the plan output in the workflow run logs.
+
+      - name: No Drift (Success)
+        if: steps.plan.conclusion == 'success'
+        run: echo "✅ No drift detected."
