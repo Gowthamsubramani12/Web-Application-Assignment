@@ -21,13 +21,14 @@ resource "aws_autoscaling_group" "app" {
   health_check_type         = "ELB"
   health_check_grace_period = 300
 
-  instance_refresh {
-    strategy = "Rolling"
-    preferences {
-      min_healthy_percentage = 50
-    }
+instance_refresh {
+  strategy = "Rolling"
+  preferences {
+    min_healthy_percentage = 50
   }
+  triggers = ["launch_template"]
 }
+
 
 resource "aws_autoscaling_policy" "scale_up" {
   name                   = "${var.project_name}-scale-up-${var.environment}"
