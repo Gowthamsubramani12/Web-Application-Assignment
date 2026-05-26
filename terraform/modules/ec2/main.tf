@@ -9,7 +9,7 @@ data "aws_ami" "amazon_linux_2023" {
 }
 
 resource "aws_ecr_repository" "app" {
-  name                 = "webapp-production"
+  name                 = "${var.project_name}-repo-${var.environment}"
   image_tag_mutability = "MUTABLE"
 
   image_scanning_configuration {
