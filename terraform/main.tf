@@ -37,6 +37,7 @@ module "ec2" {
   key_name           = var.key_name
   project_name       = var.project_name
   environment        = var.environment
+  image_tag          = var.image_tag
 }
 
 module "autoscaling" {

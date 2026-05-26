@@ -8,3 +8,4 @@ variable "key_name" {
   type    = string
   default = ""
 }
+variable "image_tag" { type = string }

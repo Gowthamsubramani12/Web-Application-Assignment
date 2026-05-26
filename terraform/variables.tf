@@ -71,3 +71,8 @@ variable "key_name" {
   type        = string
   default     = ""
 }
+
+variable "image_tag" {
+  description = "Docker image tag to deploy"
+  type        = string
+}

@@ -9,7 +9,7 @@ data "aws_ami" "amazon_linux_2023" {
 }
 
 resource "aws_ecr_repository" "app" {
-  name                 = "${var.project_name}-repo-${var.environment}"
+  name                 = "webapp-production"
   image_tag_mutability = "MUTABLE"
 
   image_scanning_configuration {
@@ -88,7 +88,7 @@ resource "aws_launch_template" "app" {
               aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin ${aws_ecr_repository.app.repository_url}
               
               # Run the application container (Nginx on port 80)
-              docker run -d -p 80:80 --name app ${aws_ecr_repository.app.repository_url}:latest || true
+              docker run -d -p 80:80 --name app ${aws_ecr_repository.app.repository_url}:${var.image_tag} || true
               EOF
   )
 
