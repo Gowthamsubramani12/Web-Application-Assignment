@@ -2,35 +2,35 @@ name: Terraform Infra
 
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - 'terraform/**'
 
 jobs:
   infra:
     runs-on: ubuntu-latest
     env:
       AWS_REGION: ap-south-1
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+    - name: Checkout Code
+      uses: actions/checkout@v4
 
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_REGION }}
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
 
-      - name: Terraform Init
-        working-directory: ./terraform
-        run: terraform init -input=false
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
 
-      - name: Terraform Plan
-        working-directory: ./terraform
-        run: |
-          terraform plan -input=false -out=tfplan
+    - name: Terraform Init
+      working-directory: ./terraform
+      run: terraform init -input=false
 
-      - name: Terraform Apply
-        working-directory: ./terraform
-        run: terraform apply -auto-approve tfplan
+    - name: Terraform Plan
+      working-directory: ./terraform
+      run: terraform plan -input=false -out=tfplan
+
+    - name: Terraform Apply
+      working-directory: ./terraform
+      run: terraform apply -auto-approve tfplan
