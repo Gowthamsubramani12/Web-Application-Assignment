@@ -9,8 +9,9 @@ data "aws_ami" "amazon_linux_2023" {
 }
 
 resource "aws_ecr_repository" "app" {
-  name                 = "${var.project_name}-repo-${var.environment}"
+  name                 = "webapp-production"
   image_tag_mutability = "MUTABLE"
+  force_delete         = true
 
   image_scanning_configuration {
     scan_on_push = true
