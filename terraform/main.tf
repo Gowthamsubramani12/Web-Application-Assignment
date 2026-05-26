@@ -15,7 +15,6 @@ module "security_groups" {
   vpc_id       = module.vpc.vpc_id
   project_name = var.project_name
   environment  = var.environment
-  your_ip      = var.your_ip
 }
 
 module "alb" {
@@ -31,14 +30,13 @@ module "alb" {
 module "ec2" {
   source = "./modules/ec2"
 
-  vpc_id              = module.vpc.vpc_id
-  public_subnets      = module.vpc.public_subnet_ids
-  app_security_group  = module.security_groups.app_sg_id
-  jenkins_sg_id       = module.security_groups.jenkins_sg_id
-  instance_type       = var.instance_type
-  key_name            = var.key_name
-  project_name        = var.project_name
-  environment         = var.environment
+  vpc_id             = module.vpc.vpc_id
+  public_subnets     = module.vpc.public_subnet_ids
+  app_security_group = module.security_groups.app_sg_id
+  instance_type      = var.instance_type
+  key_name           = var.key_name
+  project_name       = var.project_name
+  environment        = var.environment
 }
 
 module "autoscaling" {
@@ -57,9 +55,9 @@ module "autoscaling" {
 module "monitoring" {
   source = "./modules/monitoring"
 
-  alb_arn_suffix        = module.alb.alb_arn_suffix
+  alb_arn_suffix          = module.alb.alb_arn_suffix
   target_group_arn_suffix = module.alb.target_group_arn_suffix
-  asg_name              = module.autoscaling.asg_name
-  project_name          = var.project_name
-  environment           = var.environment
+  asg_name                = module.autoscaling.asg_name
+  project_name            = var.project_name
+  environment             = var.environment
 }

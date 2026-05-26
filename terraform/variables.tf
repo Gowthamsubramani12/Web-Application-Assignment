@@ -64,11 +64,7 @@ variable "asg_desired_capacity" {
   default     = 2
 }
 
-variable "your_ip" {
-  description = "Your IP address for Jenkins access (e.g., x.x.x.x/32)"
-  type        = string
-  default     = "0.0.0.0/0" # WARNING: Change this in terraform.tfvars for security
-}
+
 
 variable "key_name" {
   description = "SSH Key pair name for EC2 instances"

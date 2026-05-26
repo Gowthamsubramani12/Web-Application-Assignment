@@ -58,7 +58,7 @@ resource "aws_iam_role_policy_attachment" "ssm" {
 
 resource "aws_iam_role_policy_attachment" "ecr_read" {
   role       = aws_iam_role.app_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryPowerUser"
 }
 
 resource "aws_iam_instance_profile" "app_profile" {
@@ -97,36 +97,3 @@ resource "aws_launch_template" "app" {
   }
 }
 
-# Jenkins EC2 Instance in Public Subnet
-resource "aws_instance" "jenkins" {
-  ami                         = data.aws_ami.amazon_linux_2023.id
-  instance_type               = var.instance_type
-  key_name                    = var.key_name
-  subnet_id                   = var.public_subnets[0]
-  vpc_security_group_ids      = [var.jenkins_sg_id]
-  associate_public_ip_address = true
-  iam_instance_profile        = aws_iam_instance_profile.app_profile.name
-
-  # IAM role with ECR push/pull permissions would be attached here in a real scenario
-  # but keeping it simple as requested
-
-  user_data = <<-EOF
-              #!/bin/bash
-              yum update -y
-              yum install -y docker git
-              systemctl start docker
-              systemctl enable docker
-              
-              # Run Jenkins in Docker
-              mkdir -p /var/jenkins_home
-              chown -R 1000:1000 /var/jenkins_home
-              docker run -d -p 8080:8080 -p 50000:50000 \
-                -v /var/jenkins_home:/var/jenkins_home \
-                -v /var/run/docker.sock:/var/run/docker.sock \
-                --name jenkins jenkins/jenkins:lts
-              EOF
-
-  tags = {
-    Name = "${var.project_name}-jenkins-${var.environment}"
-  }
-}

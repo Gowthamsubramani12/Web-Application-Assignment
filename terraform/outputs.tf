@@ -3,10 +3,7 @@ output "alb_dns_name" {
   value       = module.alb.alb_dns_name
 }
 
-output "jenkins_public_ip" {
-  description = "The public IP address of the Jenkins server"
-  value       = module.ec2.jenkins_public_ip
-}
+
 
 output "ecr_repository_url" {
   description = "The URL of the ECR repository"
