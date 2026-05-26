@@ -51,3 +51,10 @@ jobs:
     - name: Terraform Apply
       working-directory: ./terraform
       run: terraform apply -auto-approve tfplan
+
+    - name: Trigger Instance Refresh
+      run: |
+        aws autoscaling start-instance-refresh \
+          --auto-scaling-group-name webapp-assignment-asg-production \
+          --region ap-south-1 \
+          --preferences '{"MinHealthyPercentage": 50, "InstanceWarmup": 60}'
