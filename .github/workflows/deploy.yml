@@ -7,7 +7,7 @@ on:
 
 env:
   AWS_REGION: ap-south-1
-  ECR_REPO: webapp-production
+  ECR_REPO: webapp-assignment-repo-production
 
 jobs:
   build-and-deploy:
