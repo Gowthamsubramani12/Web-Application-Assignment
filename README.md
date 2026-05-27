@@ -3,9 +3,6 @@
 > **End-to-end automated infrastructure using Terraform, GitHub Actions CI/CD, Auto Scaling, ALB, CloudWatch monitoring, and S3 remote state with DynamoDB locking.**
 
 ![alt text](aws-webapp-production-webserver.png)
----
-
-## 🌐 Live Application
 
 **DNS Endpoint (ALB):**
 ```
