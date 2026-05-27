@@ -9,7 +9,10 @@
 
 **DNS Endpoint (ALB):**
 ```
-http://webapp-assignment-alb-production-909502075.ap-south-1.elb.amazonaws.com
+http://webapp-assignment-alb-production-909502075.ap-south-1.elb.amazonaws.com/
+
+Note: Domain Name will not configure Becoz i don't have to map the domain address and if domain maps through route 53 it should have ssl certificate with alb then it will secure connection
+
 ```
 
 The application is live and publicly accessible via the ALB DNS name above. It serves a containerized Nginx web application displaying the architecture flow — deployed fully via GitHub Actions CI/CD and Terraform IaC. The page confirms:
@@ -69,7 +72,7 @@ The ALB sits in public subnets and distributes traffic across EC2 instances runn
 
 ## 2. VPC & Network Design
 
-![VPC Resource Map](./screenshots/vpc-resource-map.png)
+![alt text](vpc-architecture.png)
 
 ### VPC Configuration
 
@@ -106,8 +109,6 @@ The ALB sits in public subnets and distributes traffic across EC2 instances runn
 
 ## 3. Compute Layer — Auto Scaling Group
 
-![ASG Configuration](./screenshots/asg-config.png)
-
 ### ASG Details
 
 | Property | Value |
@@ -143,8 +144,7 @@ This means **zero manual intervention** is needed when the ASG launches new inst
 
 ## 4. Load Balancer Configuration
 
-![ALB Resource Map](./screenshots/alb-resource-map.png)
-![ALB Details](./screenshots/alb-details.png)
+![alt text](LB-FLOW.png)
 
 ### ALB Details
 
@@ -335,7 +335,7 @@ ALB health check passes → traffic routed to new instances ✅
 
 ## 7. Monitoring & Alerting — CloudWatch
 
-![CloudWatch Overview](./screenshots/cloudwatch-overview.png)
+![alt text](Cloudwatch.png)
 
 Two CloudWatch alarms are configured to proactively detect performance anomalies.
 
