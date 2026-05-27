@@ -20,8 +20,6 @@ The application is live and publicly accessible via the ALB DNS name above. It s
 
 > **Note:** The connection shows "Not Secure" because HTTPS/TLS is not yet configured. Adding ACM + Route53 is listed as a future improvement.
 
-![Live Application](./screenshots/live-app.png)
-
 ---
 
 ## Table of Contents
