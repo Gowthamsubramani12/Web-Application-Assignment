@@ -3,6 +3,10 @@ name: Terraform Infra
 on:
   workflow_dispatch:
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   infra:
     runs-on: ubuntu-latest
@@ -16,8 +20,7 @@ jobs:
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v4
       with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        role-to-assume: arn:aws:iam::921406115716:role/Terraform-identity
         aws-region: ${{ env.AWS_REGION }}
 
     - name: Setup Terraform
