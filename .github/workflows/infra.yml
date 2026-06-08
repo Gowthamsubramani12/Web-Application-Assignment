@@ -8,32 +8,54 @@ permissions:
   contents: read
 
 jobs:
-  infra:
+  plan:
     runs-on: ubuntu-latest
-    env:
-      AWS_REGION: ap-south-1
 
     steps:
-    - name: Checkout Code
-      uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v4
-      with:
-        role-to-assume: arn:aws:iam::921406115716:role/Terraform-identity
-        aws-region: ${{ env.AWS_REGION }}
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::921406115716:role/Terraform-identity
+          aws-region: ap-south-1
 
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v3
+      - uses: hashicorp/setup-terraform@v3
 
-    - name: Terraform Init
-      working-directory: ./terraform
-      run: terraform init -input=false
+      - run: terraform init -input=false
+        working-directory: ./terraform
 
-    - name: Terraform Plan
-      working-directory: ./terraform
-      run: terraform plan -input=false -out=tfplan
+      - run: terraform plan -input=false -out=tfplan
+        working-directory: ./terraform
 
-    - name: Terraform Apply
-      working-directory: ./terraform
-      run: terraform apply -auto-approve tfplan
+      - uses: actions/upload-artifact@v4
+        with:
+          name: tfplan
+          path: terraform/tfplan
+
+  apply:
+    needs: plan
+    runs-on: ubuntu-latest
+
+    environment:
+      name: production
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: tfplan
+          path: terraform
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::921406115716:role/Terraform-identity
+          aws-region: ap-south-1
+
+      - uses: hashicorp/setup-terraform@v3
+
+      - run: terraform init -input=false
+        working-directory: ./terraform
+
+      - run: terraform apply -auto-approve tfplan
+        working-directory: ./terraform
