@@ -80,25 +80,16 @@ resource "aws_launch_template" "app" {
 
   user_data = base64encode(<<-EOF
               #!/bin/bash
-              # Removed 'yum update -y' to speed up boot time and avoid ASG health check grace period timeouts.
+              yum update -y
               yum install -y docker
               systemctl start docker
               systemctl enable docker
               
-              # Extract registry URL for docker login
-              REGISTRY_URL=$(echo ${aws_ecr_repository.app.repository_url} | cut -d'/' -f1)
-              
               # AWS CLI is pre-installed on AL2023. Login to ECR:
-              aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin $REGISTRY_URL
+              aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin ${aws_ecr_repository.app.repository_url}
               
-              # Try to pull the specified image. If it fails (e.g., initial terraform apply before docker image is pushed),
-              # fallback to a default nginx image so the ALB health check passes and prevents ASG instance cycling.
-              if docker pull ${aws_ecr_repository.app.repository_url}:${var.image_tag}; then
-                docker run -d -p 80:80 --name app ${aws_ecr_repository.app.repository_url}:${var.image_tag}
-              else
-                echo "Image not found, falling back to default nginx to pass health checks..."
-                docker run -d -p 80:80 --name app nginx:alpine
-              fi
+              # Run the application container (Nginx on port 80)
+              docker run -d -p 80:80 --name app ${aws_ecr_repository.app.repository_url}:${var.image_tag} || true
               EOF
   )
 
